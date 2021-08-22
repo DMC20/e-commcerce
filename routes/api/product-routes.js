@@ -20,6 +20,17 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
+  Product.findOne({
+    where : {
+      id: req.params.id 
+    },
+    attributes: ['id', 'product_name', 'price', 'stock', 'category_id'],
+    include: [Category, Tag]
+  })
+  .then((product) => {
+    console.log('response from findOne', product)
+    res.json(product)})
+  .catch((err) => {res.status(500).json(err)})
 });
 
 // create new product
@@ -98,6 +109,15 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
+  Product.destroy({
+    where: {
+      id: req.params.id
+    } 
+  })
+  .then((product) => {
+    console.log('response from delete', product)
+    res.json(product)})
+  .catch((err) => {res.status(500).json(err)})
 });
 
 module.exports = router;
